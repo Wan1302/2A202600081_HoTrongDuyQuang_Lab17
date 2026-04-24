@@ -1,0 +1,798 @@
+{
+  "scenario_count": 10,
+  "generation": {
+    "llm_provider": "openai",
+    "model": "gpt-4o-mini"
+  },
+  "graph_flow": "observe_turn -> save_or_update_memory -> retrieve_memory -> build_prompt_sections -> generate_answer -> save_episode_outcome",
+  "memory_backends": {
+    "conversation_buffer": "memory",
+    "redis_long_term": "redis",
+    "json_episodic_log": "json",
+    "chroma_semantic": "chroma"
+  },
+  "metrics": {
+    "with_memory": {
+      "avg_response_relevance": 0.96,
+      "avg_context_utilization": 0.2679,
+      "avg_response_tokens": 17.2,
+      "avg_token_efficiency": 0.07136,
+      "memory_hit_rate": 1.0
+    },
+    "without_memory": {
+      "avg_response_relevance": 0.1333,
+      "avg_context_utilization": 0.0615,
+      "avg_response_tokens": 16.6,
+      "avg_token_efficiency": 0.005676,
+      "memory_hit_rate": 0.0
+    }
+  },
+  "memory_hit_rate_analysis": {
+    "with_memory_hit_scenarios": 10,
+    "with_memory_miss_scenarios": [],
+    "interpretation": "Memory improves profile recall, conflict updates, episodic recall, semantic retrieval, and token-budget cases."
+  },
+  "token_budget_breakdown": {
+    "max_context_budget_tokens": 187,
+    "avg_with_memory_context_used_tokens": 50.1,
+    "avg_without_memory_context_used_tokens": 11.5,
+    "eviction_total": 0
+  },
+  "rows": [
+    {
+      "index": 1,
+      "scenario": "profile_name_after_noise",
+      "category": "profile_recall",
+      "turns": [
+        "My name is Linh.",
+        "Today I am debugging a memory router.",
+        "The meeting room is B204, but that is not part of my profile.",
+        "I also mentioned another student named Minh in the hallway."
+      ],
+      "query": "What is my name?",
+      "expected_terms": [
+        "linh"
+      ],
+      "with_memory": {
+        "response": "Your name is Linh.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: factual_recall\n- Memory token budget used: 29/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- user_name: Linh"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 7,
+        "matched_terms": [
+          "linh"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.1551,
+        "response_tokens": 6,
+        "token_efficiency": 0.166667,
+        "context_used_tokens": 29,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient to determine your name.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 0,
+        "matched_terms": [],
+        "response_relevance": 0.0,
+        "context_utilization": 0.0321,
+        "response_tokens": 12,
+        "token_efficiency": 0.0,
+        "context_used_tokens": 6,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 2,
+      "scenario": "allergy_conflict_update",
+      "category": "conflict_update",
+      "turns": [
+        "Tôi dị ứng sữa bò.",
+        "À nhầm, tôi dị ứng đậu nành chứ không phải sữa bò.",
+        "For dinner planning, remember the corrected allergy only."
+      ],
+      "query": "Tôi dị ứng gì?",
+      "expected_terms": [
+        "đậu",
+        "nành"
+      ],
+      "with_memory": {
+        "response": "Bạn dị ứng với đậu nành.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: factual_recall\n- Memory token budget used: 20/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- allergy: đậu nành"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 6,
+        "matched_terms": [
+          "nành",
+          "đậu"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.107,
+        "response_tokens": 8,
+        "token_efficiency": 0.125,
+        "context_used_tokens": 20,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "Stored memory is insufficient.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 0,
+        "matched_terms": [],
+        "response_relevance": 0.0,
+        "context_utilization": 0.0321,
+        "response_tokens": 6,
+        "token_efficiency": 0.0,
+        "context_used_tokens": 6,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 3,
+      "scenario": "rescheduled_project_deadline",
+      "category": "factual_recall",
+      "turns": [
+        "The graph RAG project deadline was originally Friday week 7.",
+        "During class the lecturer moved the graph RAG deadline to Monday week 8.",
+        "The Friday week 7 date is only for the presentation draft now."
+      ],
+      "query": "When is the final graph RAG project deadline now?",
+      "expected_terms": [
+        "monday",
+        "week",
+        "8"
+      ],
+      "with_memory": {
+        "response": "The final graph RAG project deadline is now Monday week 8, as moved by the lecturer during class.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: factual_recall\n- Memory token budget used: 58/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 6,
+        "matched_terms": [
+          "8",
+          "monday",
+          "week"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.3102,
+        "response_tokens": 24,
+        "token_efficiency": 0.041667,
+        "context_used_tokens": 58,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient to provide the deadline for the final graph RAG project.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 0,
+        "matched_terms": [],
+        "response_relevance": 0.0,
+        "context_utilization": 0.0642,
+        "response_tokens": 20,
+        "token_efficiency": 0.0,
+        "context_used_tokens": 12,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 4,
+      "scenario": "meeting_with_distractors",
+      "category": "episodic_recall",
+      "turns": [
+        "Yesterday I had a meeting with Dr. Linh about memory routers.",
+        "Before that meeting I chatted with An about UI colors, unrelated to the lab.",
+        "Dr. Linh asked us to compare preference recall, factual recall, and episodic recall separately.",
+        "The room booking number was B204, but that detail is not important."
+      ],
+      "query": "What did Dr. Linh ask us to compare in the meeting?",
+      "expected_terms": [
+        "preference",
+        "factual",
+        "episodic",
+        "recall"
+      ],
+      "with_memory": {
+        "response": "Dr. Linh asked us to compare preference recall, factual recall, and episodic recall separately.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: experience_recall\n- Memory token budget used: 84/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- none"
+        ],
+        "intent": "experience_recall",
+        "memory_hits": 8,
+        "matched_terms": [
+          "episodic",
+          "factual",
+          "preference",
+          "recall"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.4492,
+        "response_tokens": 19,
+        "token_efficiency": 0.052632,
+        "context_used_tokens": 84,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient to provide information about what Dr. Linh asked us to compare in the meeting.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "experience_recall",
+        "memory_hits": 0,
+        "matched_terms": [],
+        "response_relevance": 0.0,
+        "context_utilization": 0.0802,
+        "response_tokens": 25,
+        "token_efficiency": 0.0,
+        "context_used_tokens": 15,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 5,
+      "scenario": "conditional_language_preference",
+      "category": "profile_recall",
+      "turns": [
+        "For casual chat I like English because it helps me practice.",
+        "For lab reports, I want concise Vietnamese with technical terms kept in English.",
+        "Do not make the lab report sound like marketing copy."
+      ],
+      "query": "How should you write my lab report summary?",
+      "expected_terms": [
+        "concise",
+        "vietnamese",
+        "technical",
+        "english"
+      ],
+      "with_memory": {
+        "response": "Your lab report summary should be concise in Vietnamese, with technical terms kept in English, and it should not sound like marketing copy.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: factual_recall\n- Memory token budget used: 41/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 5,
+        "matched_terms": [
+          "concise",
+          "english",
+          "technical",
+          "vietnamese"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.2193,
+        "response_tokens": 30,
+        "token_efficiency": 0.033333,
+        "context_used_tokens": 41,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient to provide specific guidance on writing your lab report summary.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 0,
+        "matched_terms": [],
+        "response_relevance": 0.0,
+        "context_utilization": 0.0588,
+        "response_tokens": 20,
+        "token_efficiency": 0.0,
+        "context_used_tokens": 11,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 6,
+      "scenario": "corrected_email_fact",
+      "category": "conflict_update",
+      "turns": [
+        "My backup email is student17@vinuni.edu.vn, wait that may be wrong.",
+        "Correction: use lab17.student@vinuni.edu.vn for backup contact.",
+        "The old student17 address belongs to another account."
+      ],
+      "query": "What is my backup email?",
+      "expected_terms": [
+        "lab17",
+        "student",
+        "vinuni",
+        "edu",
+        "vn"
+      ],
+      "with_memory": {
+        "response": "Your backup email is lab17.student@vinuni.edu.vn.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: factual_recall\n- Memory token budget used: 28/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- backup_email: lab17.student@vinuni.edu.vn"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 6,
+        "matched_terms": [
+          "edu",
+          "lab17",
+          "student",
+          "vinuni",
+          "vn"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.1497,
+        "response_tokens": 12,
+        "token_efficiency": 0.083333,
+        "context_used_tokens": 28,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient to provide your backup email.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 0,
+        "matched_terms": [],
+        "response_relevance": 0.0,
+        "context_utilization": 0.0374,
+        "response_tokens": 13,
+        "token_efficiency": 0.0,
+        "context_used_tokens": 7,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 7,
+      "scenario": "trip_sequence_recall",
+      "category": "episodic_recall",
+      "turns": [
+        "Last time in Da Nang I visited Son Tra before the AI workshop.",
+        "I skipped Ba Na Hills because the weather turned bad.",
+        "After the workshop I wrote notes about retrieval evaluation at the hotel."
+      ],
+      "query": "What place did I visit before the AI workshop in Da Nang?",
+      "expected_terms": [
+        "son",
+        "tra",
+        "before",
+        "workshop"
+      ],
+      "with_memory": {
+        "response": "Before the AI workshop in Da Nang, you visited Son Tra.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: factual_recall\n- Memory token budget used: 62/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 6,
+        "matched_terms": [
+          "before",
+          "son",
+          "tra",
+          "workshop"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.3316,
+        "response_tokens": 15,
+        "token_efficiency": 0.066667,
+        "context_used_tokens": 62,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 0,
+        "matched_terms": [],
+        "response_relevance": 0.0,
+        "context_utilization": 0.0856,
+        "response_tokens": 7,
+        "token_efficiency": 0.0,
+        "context_used_tokens": 16,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 8,
+      "scenario": "tool_preference_with_negative",
+      "category": "profile_recall",
+      "turns": [
+        "I tried unittest for an older Python lab.",
+        "For this memory lab I prefer pytest because the output is easier to scan.",
+        "Do not assume I want a web dashboard for the benchmark."
+      ],
+      "query": "Which Python test tool do I prefer for this memory lab?",
+      "expected_terms": [
+        "pytest",
+        "memory",
+        "lab"
+      ],
+      "with_memory": {
+        "response": "For this memory lab, you prefer pytest because the output is easier to scan.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: user_preference\n- Memory token budget used: 60/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- none"
+        ],
+        "intent": "user_preference",
+        "memory_hits": 6,
+        "matched_terms": [
+          "lab",
+          "memory",
+          "pytest"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.3209,
+        "response_tokens": 19,
+        "token_efficiency": 0.052632,
+        "context_used_tokens": 60,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient to determine which Python test tool you prefer for this memory lab.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "user_preference",
+        "memory_hits": 0,
+        "matched_terms": [
+          "lab",
+          "memory"
+        ],
+        "response_relevance": 0.6667,
+        "context_utilization": 0.0802,
+        "response_tokens": 23,
+        "token_efficiency": 0.028986,
+        "context_used_tokens": 15,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 9,
+      "scenario": "conflicting_library_choice",
+      "category": "semantic_retrieval",
+      "turns": [
+        "At first I planned to use FAISS for semantic memory.",
+        "The lab requirement specifically asks for Chroma as the semantic backend.",
+        "Use FAISS only as a comparison note, not as the implementation choice."
+      ],
+      "query": "Which semantic memory backend should the lab implementation use?",
+      "expected_terms": [
+        "chroma",
+        "semantic",
+        "backend"
+      ],
+      "with_memory": {
+        "response": "The lab requirement specifically asks for Chroma as the semantic backend.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: factual_recall\n- Memory token budget used: 56/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 6,
+        "matched_terms": [
+          "backend",
+          "chroma",
+          "semantic"
+        ],
+        "response_relevance": 1.0,
+        "context_utilization": 0.2995,
+        "response_tokens": 15,
+        "token_efficiency": 0.066667,
+        "context_used_tokens": 56,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient to provide an answer regarding the semantic memory backend for the lab implementation.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 0,
+        "matched_terms": [
+          "backend",
+          "semantic"
+        ],
+        "response_relevance": 0.6667,
+        "context_utilization": 0.0642,
+        "response_tokens": 24,
+        "token_efficiency": 0.027778,
+        "context_used_tokens": 12,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    },
+    {
+      "index": 10,
+      "scenario": "token_budget_priority",
+      "category": "trim_token_budget",
+      "turns": [
+        "High priority: keep user preferences and corrected facts even when trimming context.",
+        "Medium priority: keep directly relevant episodic memories.",
+        "Low priority: remove filler chatter, old jokes, and unrelated room numbers first.",
+        "The context window for this lab is intentionally small to test eviction."
+      ],
+      "query": "What should be kept first when the context window is trimmed?",
+      "expected_terms": [
+        "preferences",
+        "corrected",
+        "facts",
+        "relevant",
+        "episodic"
+      ],
+      "with_memory": {
+        "response": "When the context window is trimmed, high priority should be given to keeping user preferences and corrected facts.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17. You answer using the provided memory state.\n</persona>",
+          "<rules>\n- Prefer corrected/newer profile facts over older conflicting facts.\n- Use profile memory for stable user facts and preferences.\n- Use episodic memory for past events, outcomes, and previous task traces.\n- Use semantic memory for concept or requirement retrieval.\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n- Detected intent: factual_recall\n- Memory token budget used: 63/187\n- Retrieved memory is separated by backend role below.",
+          "## User Profile\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 7,
+        "matched_terms": [
+          "corrected",
+          "facts",
+          "preferences"
+        ],
+        "response_relevance": 0.6,
+        "context_utilization": 0.3369,
+        "response_tokens": 24,
+        "token_efficiency": 0.025,
+        "context_used_tokens": 63,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      },
+      "without_memory": {
+        "response": "The stored memory is insufficient to provide an answer to your question.",
+        "llm_provider": "openai",
+        "model": "gpt-4o-mini",
+        "memory_backend_modes": {
+          "conversation_buffer": "memory",
+          "redis_long_term": "redis",
+          "json_episodic_log": "json",
+          "chroma_semantic": "chroma"
+        },
+        "prompt_sections": [
+          "<persona>\nYou are a memory-aware lab assistant for Lab 17.\n</persona>",
+          "<rules>\n- If no relevant memory exists, say the stored memory is insufficient.\n</rules>",
+          "<tools_instruction>\n## User Profile\n- none",
+          "## Episodic Memory\n- none"
+        ],
+        "intent": "factual_recall",
+        "memory_hits": 0,
+        "matched_terms": [],
+        "response_relevance": 0.0,
+        "context_utilization": 0.0802,
+        "response_tokens": 16,
+        "token_efficiency": 0.0,
+        "context_used_tokens": 15,
+        "context_budget_tokens": 187,
+        "evicted_items": 0
+      }
+    }
+  ]
+}
