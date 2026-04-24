@@ -2,6 +2,12 @@
 
 Exactly 10 noisy multi-turn conversations comparing no-memory vs with-memory.
 
+After running `python run_benchmark.py`, generated benchmark outputs are saved to:
+
+- `reports/report.json`: structured metrics and per-scenario details.
+- `reports/report.md`: readable report with metrics, backend modes, privacy reflection, and rubric coverage.
+- `BENCHMARK.md`: this grading-oriented benchmark table and scenario list.
+
 | # | Scenario | Category | No-memory result | With-memory result | Pass? |
 | ---: | --- | --- | --- | --- | --- |
 | 1 | profile_name_after_noise | profile_recall | The stored memory is insufficient to determine your name. | Your name is Linh. | Pass |
