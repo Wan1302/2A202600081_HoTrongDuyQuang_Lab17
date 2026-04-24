@@ -1,0 +1,16 @@
+[
+  {
+    "content": "Task outcome: query='When is the final graph RAG project deadline now?' answer='The final graph RAG project deadline is now Monday week 8, as moved by the lecturer during class.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "When is the final graph RAG project deadline now?",
+      "answer": "The final graph RAG project deadline is now Monday week 8, as moved by the lecturer during class."
+    },
+    "created_at": 1777007301.6674519
+  }
+]

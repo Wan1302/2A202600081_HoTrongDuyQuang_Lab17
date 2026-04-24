@@ -1,0 +1,16 @@
+[
+  {
+    "content": "Task outcome: query='Which Python test tool do I prefer for this memory lab?' answer='For this memory lab, you prefer pytest because the output is easier to scan.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "Which Python test tool do I prefer for this memory lab?",
+      "answer": "For this memory lab, you prefer pytest because the output is easier to scan."
+    },
+    "created_at": 1777007313.1693757
+  }
+]

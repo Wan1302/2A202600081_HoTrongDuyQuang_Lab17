@@ -1,0 +1,16 @@
+[
+  {
+    "content": "Task outcome: query='T\u00f4i d\u1ecb \u1ee9ng g\u00ec?' answer='B\u1ea1n d\u1ecb \u1ee9ng v\u1edbi \u0111\u1eadu n\u00e0nh.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "T\u00f4i d\u1ecb \u1ee9ng g\u00ec?",
+      "answer": "B\u1ea1n d\u1ecb \u1ee9ng v\u1edbi \u0111\u1eadu n\u00e0nh."
+    },
+    "created_at": 1777007299.5719612
+  }
+]

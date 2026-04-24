@@ -1,0 +1,16 @@
+[
+  {
+    "content": "Task outcome: query='What should be kept first when the context window is trimmed?' answer='When the context window is trimmed, high priority should be given to keeping user preferences and corrected facts.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "What should be kept first when the context window is trimmed?",
+      "answer": "When the context window is trimmed, high priority should be given to keeping user preferences and corrected facts."
+    },
+    "created_at": 1777007320.1667857
+  }
+]

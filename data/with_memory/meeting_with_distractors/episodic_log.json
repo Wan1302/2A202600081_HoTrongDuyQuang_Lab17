@@ -1,0 +1,36 @@
+[
+  {
+    "content": "Yesterday I had a meeting with Dr. Linh about memory routers.",
+    "memory_type": "experience",
+    "priority": 2,
+    "tags": [
+      "experience"
+    ],
+    "metadata": {},
+    "created_at": 1777007302.8652606
+  },
+  {
+    "content": "Before that meeting I chatted with An about UI colors, unrelated to the lab.",
+    "memory_type": "experience",
+    "priority": 2,
+    "tags": [
+      "experience"
+    ],
+    "metadata": {},
+    "created_at": 1777007302.8761518
+  },
+  {
+    "content": "Task outcome: query='What did Dr. Linh ask us to compare in the meeting?' answer='Dr. Linh asked us to compare preference recall, factual recall, and episodic recall separately.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "What did Dr. Linh ask us to compare in the meeting?",
+      "answer": "Dr. Linh asked us to compare preference recall, factual recall, and episodic recall separately."
+    },
+    "created_at": 1777007304.131764
+  }
+]

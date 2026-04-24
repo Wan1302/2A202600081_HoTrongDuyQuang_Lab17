@@ -1,0 +1,16 @@
+[
+  {
+    "content": "Task outcome: query='What is my backup email?' answer='Your backup email is lab17.student@vinuni.edu.vn.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "What is my backup email?",
+      "answer": "Your backup email is lab17.student@vinuni.edu.vn."
+    },
+    "created_at": 1777007309.177198
+  }
+]

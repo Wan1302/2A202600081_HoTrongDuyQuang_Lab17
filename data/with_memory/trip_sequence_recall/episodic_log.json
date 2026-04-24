@@ -1,0 +1,26 @@
+[
+  {
+    "content": "Last time in Da Nang I visited Son Tra before the AI workshop.",
+    "memory_type": "experience",
+    "priority": 2,
+    "tags": [
+      "experience"
+    ],
+    "metadata": {},
+    "created_at": 1777007310.0901017
+  },
+  {
+    "content": "Task outcome: query='What place did I visit before the AI workshop in Da Nang?' answer='Before the AI workshop in Da Nang, you visited Son Tra.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "What place did I visit before the AI workshop in Da Nang?",
+      "answer": "Before the AI workshop in Da Nang, you visited Son Tra."
+    },
+    "created_at": 1777007310.8877964
+  }
+]

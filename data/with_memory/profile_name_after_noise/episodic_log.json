@@ -1,0 +1,26 @@
+[
+  {
+    "content": "The meeting room is B204, but that is not part of my profile.",
+    "memory_type": "experience",
+    "priority": 2,
+    "tags": [
+      "experience"
+    ],
+    "metadata": {},
+    "created_at": 1777007292.8371704
+  },
+  {
+    "content": "Task outcome: query='What is my name?' answer='Your name is Linh.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "What is my name?",
+      "answer": "Your name is Linh."
+    },
+    "created_at": 1777007296.0181804
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "content": "Task outcome: query='How should you write my lab report summary?' answer='Your lab report summary should be concise in Vietnamese, with technical terms kept in English, and it should not sound like marketing copy.'",
+    "memory_type": "episode",
+    "priority": 2,
+    "tags": [
+      "episode",
+      "outcome"
+    ],
+    "metadata": {
+      "query": "How should you write my lab report summary?",
+      "answer": "Your lab report summary should be concise in Vietnamese, with technical terms kept in English, and it should not sound like marketing copy."
+    },
+    "created_at": 1777007306.534557
+  }
+]
